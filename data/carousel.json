@@ -1,0 +1,38 @@
+[
+  {
+    "id": "slide-1",
+    "type": "hero",
+    "title": "",
+    "subtitle": "",
+    "caption": "",
+    "image": "",
+    "bg_color": ""
+  },
+  {
+    "id": "slide-2",
+    "type": "image",
+    "title": "Building Scalable Systems",
+    "subtitle": "From microservices to monoliths — engineered for growth",
+    "caption": "Architecture & Backend",
+    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400&q=80",
+    "bg_color": "#0d0f1a"
+  },
+  {
+    "id": "slide-3",
+    "type": "image",
+    "title": "Open Source & Community",
+    "subtitle": "Contributing to the tools that power modern development",
+    "caption": "Open Source",
+    "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80",
+    "bg_color": "#0d0f1a"
+  },
+  {
+    "id": "slide-4",
+    "type": "image",
+    "title": "Crafting Beautiful Interfaces",
+    "subtitle": "Clean code meets pixel-perfect design",
+    "caption": "Frontend & Design",
+    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1400&q=80",
+    "bg_color": "#0d0f1a"
+  }
+]

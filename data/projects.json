@@ -1,0 +1,34 @@
+[
+  {
+    "title": "GoStream",
+    "description": "A high-throughput event-streaming platform built on Go and Kafka. Handles 50k+ events/sec with sub-10ms P99 latency. Includes a real-time dashboard and alerting engine.",
+    "tags": ["Go", "Kafka", "PostgreSQL", "React", "Docker"],
+    "live": "https://gostream.example.com",
+    "github": "https://github.com/",
+    "featured": true
+  },
+  {
+    "title": "PocketAuth",
+    "description": "A zero-dependency JWT + OAuth2 authentication microservice in pure Go. Drop-in integration for any backend. Ships with an admin UI for managing users and scopes.",
+    "tags": ["Go", "OAuth2", "JWT", "Redis", "SQLite"],
+    "live": "",
+    "github": "https://github.com/",
+    "featured": true
+  },
+  {
+    "title": "Cartographer",
+    "description": "CLI + web tool for visualising PostgreSQL schema changes across migrations. Generates interactive ER diagrams and diffs as SVG — no GUI needed.",
+    "tags": ["Go", "PostgreSQL", "SVG", "CLI", "Cobra"],
+    "live": "https://cartographer.example.com",
+    "github": "https://github.com/",
+    "featured": false
+  },
+  {
+    "title": "Quicknote",
+    "description": "An end-to-end encrypted personal note-taking app with offline-first PWA support. AES-256 encryption in the browser; the server never sees plaintext.",
+    "tags": ["TypeScript", "React", "Go", "IndexedDB", "WebCrypto"],
+    "live": "https://quicknote.example.com",
+    "github": "https://github.com/",
+    "featured": false
+  }
+]

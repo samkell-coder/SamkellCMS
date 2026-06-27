@@ -1,0 +1,16 @@
+{
+  "name": "Samuel Kelechi",
+  "role": "Full-Stack Engineer",
+  "tagline": "I build fast, reliable systems — from Go microservices to pixel-perfect UIs.",
+  "bio": "Hey, I'm Samkell — a software engineer with 5+ years of experience shipping production Go backends, designing scalable APIs, and crafting interfaces people actually enjoy using. I believe great software is equal parts systems thinking and deep attention to craft. When I'm not coding, I'm writing about it.",
+  "photo": "/static/sammy.jpeg",
+  "location": "Lagos, Nigeria. NG",
+  "available": true,
+  "social": [
+    { "label": "GitHub",    "url": "https://github.com/",          "icon": "github"    },
+    { "label": "LinkedIn",  "url": "https://linkedin.com/",         "icon": "linkedin"  },
+    { "label": "Twitter",   "url": "https://twitter.com/",          "icon": "twitter"   },
+    { "label": "WhatsApp",  "url": "https://wa.me/+2348168642824",   "icon": "whatsapp"  },
+    { "label": "Email",     "url": "mailto:sammysu.sss@gmail.com",     "icon": "mail"      }
+  ]
+}

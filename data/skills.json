@@ -1,0 +1,38 @@
+[
+  {
+    "group": "Backend",
+    "icon": "⚙️",
+    "skills": [
+      { "name": "Go (Golang)", "level": 95 },
+      { "name": "PostgreSQL",  "level": 88 },
+      { "name": "Redis",       "level": 80 },
+      { "name": "Docker",      "level": 85 },
+      { "name": "REST APIs",   "level": 95 },
+      { "name": "gRPC",        "level": 72 }
+    ]
+  },
+  {
+    "group": "Frontend",
+    "icon": "🎨",
+    "skills": [
+      { "name": "JavaScript",  "level": 90 },
+      { "name": "TypeScript",  "level": 82 },
+      { "name": "React",       "level": 78 },
+      { "name": "CSS / SCSS",  "level": 88 },
+      { "name": "HTML5",       "level": 95 },
+      { "name": "Web APIs",    "level": 85 }
+    ]
+  },
+  {
+    "group": "Tools & Infra",
+    "icon": "🛠️",
+    "skills": [
+      { "name": "Git / GitHub",  "level": 92 },
+      { "name": "Linux / Bash",  "level": 85 },
+      { "name": "CI/CD",         "level": 80 },
+      { "name": "Kubernetes",    "level": 65 },
+      { "name": "Terraform",     "level": 60 },
+      { "name": "Nginx",         "level": 75 }
+    ]
+  }
+]

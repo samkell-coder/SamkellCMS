@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Samkell<> CMS — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+img{display:block;max-width:100%}
+button,input,textarea,select{font-family:inherit;font-size:inherit}
+
+/* ── Themes ────────────────────────────────────────── */
+:root{
+  --bg:#0b0d17;
+  --bg2:#111422;
+  --surface:#161929;
+  --surface2:#1c2038;
+  --surface3:#222640;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#eef0ff;
+  --text2:#8b92b8;
+  --text3:#4a5070;
+  --accent:#7c3aed;
+  --accent2:#06b6d4;
+  --accent3:#f0abfc;
+  --green:#10b981;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --grad:linear-gradient(135deg,#7c3aed,#06b6d4);
+  --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --shadow2:0 8px 40px rgba(0,0,0,0.6);
+  --r:12px;
+  --r-sm:8px;
+  --r-xs:6px;
+  --nav-w:240px;
+  --trans:0.2s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"]{
+  --bg:#f4f5ff;
+  --bg2:#eaecfa;
+  --surface:#ffffff;
+  --surface2:#f0f2ff;
+  --surface3:#e8eaff;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(0,0,0,0.14);
+  --text:#0d0f1a;
+  --text2:#4a5280;
+  --text3:#9097bf;
+  --shadow:0 4px 24px rgba(100,80,200,0.10);
+  --shadow2:0 8px 40px rgba(100,80,200,0.15);
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.5;transition:background var(--trans),color var(--trans)}
+
+/* ── Login screen ──────────────────────────────────── */
+#login-screen{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+#login-screen.hidden{display:none}
+.login-card{
+  width:100%;max-width:400px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:2.5rem;
+  box-shadow:var(--shadow2);
+}
+.login-logo{
+  text-align:center;
+  margin-bottom:2rem;
+}
+.login-logo .logo-mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:56px;height:56px;
+  background:var(--grad);
+  border-radius:16px;
+  font-size:1.5rem;
+  margin-bottom:0.75rem;
+}
+.login-logo h1{font-size:1.4rem;font-weight:800;letter-spacing:-0.03em}
+.login-logo p{color:var(--text2);font-size:0.875rem;margin-top:0.25rem}
+
+/* ── App shell ──────────────────────────────────────── */
+#app{display:none;height:100vh;overflow:hidden}
+#app.visible{display:flex}
+
+/* ── Sidebar ────────────────────────────────────────── */
+.sidebar{
+  width:var(--nav-w);flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:width var(--trans);
+}
+.sidebar-header{
+  padding:1.25rem 1.25rem 1rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0.75rem;
+}
+.s-logo{
+  width:36px;height:36px;flex-shrink:0;
+  background:var(--grad);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:800;color:#fff;
+}
+.s-title{font-weight:700;font-size:0.95rem;line-height:1.2}
+.s-subtitle{font-size:0.72rem;color:var(--text2)}
+
+.nav-section{
+  padding:0.75rem 0.75rem 0.25rem;
+  font-size:0.68rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text3);
+}
+
+.nav-item{
+  display:flex;align-items:center;gap:0.65rem;
+  padding:0.55rem 1rem;
+  margin:0 0.5rem 0.1rem;
+  border-radius:var(--r-sm);
+  cursor:pointer;
+  font-size:0.875rem;font-weight:500;
+  color:var(--text2);
+  transition:background var(--trans),color var(--trans);
+  border:none;background:none;width:calc(100% - 1rem);text-align:left;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(124,58,237,0.15);color:var(--accent3);font-weight:600}
+.nav-item .nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;
+  background:var(--red);color:#fff;
+  font-size:0.68rem;font-weight:700;
+  padding:0.1rem 0.45rem;
+  border-radius:999px;
+}
+
+.sidebar-footer{
+  margin-top:auto;
+  padding:1rem;
+  border-top:1px solid var(--border);
+}
+.user-row{
+  display:flex;align-items:center;gap:0.65rem;
+  padding:0.5rem 0.25rem;
+  margin-bottom:0.5rem;
+}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;font-weight:700;color:#fff;flex-shrink:0;
+}
+.user-info{min-width:0}
+.user-name{font-size:0.875rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:0.72rem;color:var(--text2)}
+
+/* ── Main area ──────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+.topbar{
+  height:56px;flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 1.5rem;gap:1rem;
+}
+.topbar-title{font-size:1rem;font-weight:700;flex:1}
+.topbar-actions{display:flex;align-items:center;gap:0.5rem}
+
+.content{flex:1;overflow-y:auto;padding:1.75rem}
+
+/* ── Panels ─────────────────────────────────────────── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── Cards / surfaces ───────────────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1.5rem;
+  box-shadow:var(--shadow);
+  margin-bottom:1.25rem;
+}
+.card-title{
+  font-size:1rem;font-weight:700;
+  margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+
+/* ── Stat row (dashboard) ───────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1.25rem;
+  box-shadow:var(--shadow);
+}
+.stat-label{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);margin-bottom:0.4rem}
+.stat-value{font-size:2rem;font-weight:800;letter-spacing:-0.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-sub{font-size:0.78rem;color:var(--text2);margin-top:0.15rem}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  padding:0.55rem 1.1rem;
+  border-radius:999px;
+  border:none;cursor:pointer;
+  font-size:0.875rem;font-weight:600;
+  transition:transform 0.15s,box-shadow 0.15s,background var(--trans),opacity var(--trans);
+  text-decoration:none;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 3px 12px rgba(124,58,237,0.35)}
+.btn-primary:hover{box-shadow:0 5px 20px rgba(124,58,237,0.5)}
+.btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(6,182,212,0.06)}
+.btn-danger{background:rgba(239,68,68,0.12);color:var(--red);border:1.5px solid rgba(239,68,68,0.25)}
+.btn-danger:hover{background:rgba(239,68,68,0.2)}
+.btn-success{background:rgba(16,185,129,0.12);color:var(--green);border:1.5px solid rgba(16,185,129,0.25)}
+.btn-sm{padding:0.35rem 0.8rem;font-size:0.8rem}
+.btn-xs{padding:0.25rem 0.6rem;font-size:0.75rem}
+
+/* ── Form controls ──────────────────────────────────── */
+.form-group{margin-bottom:1.1rem}
+.form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:0.35rem}
+.form-hint{font-size:0.75rem;color:var(--text3);margin-top:0.25rem}
+
+input[type="text"],input[type="email"],input[type="url"],
+input[type="password"],input[type="number"],input[type="date"],
+textarea,select{
+  width:100%;
+  background:var(--bg);
+  border:1.5px solid var(--border2);
+  border-radius:var(--r-sm);
+  padding:0.65rem 0.9rem;
+  color:var(--text);
+  outline:none;
+  transition:border-color var(--trans),box-shadow var(--trans);
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(124,58,237,0.15);
+}
+textarea{resize:vertical;min-height:100px;font-family:'Fira Code',monospace;font-size:0.875rem}
+select option{background:var(--surface)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+
+/* ── Toggle / checkbox ──────────────────────────────── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:0.875rem;font-weight:500}
+.toggle-sub{font-size:0.78rem;color:var(--text2)}
+.toggle{
+  position:relative;width:42px;height:24px;flex-shrink:0;
+}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{
+  position:absolute;inset:0;
+  background:var(--surface3);
+  border-radius:999px;cursor:pointer;
+  transition:background var(--trans);
+  border:1px solid var(--border2);
+}
+.toggle input:checked~.toggle-track{background:var(--accent)}
+.toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:16px;height:16px;
+  background:#fff;border-radius:50%;
+  transition:transform var(--trans);
+  pointer-events:none;
+}
+.toggle input:checked~.toggle-track~.toggle-thumb,
+.toggle input:checked+.toggle-track+.toggle-thumb{transform:translateX(18px)}
+
+/* ── Table ──────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:0.875rem}
+th{
+  background:var(--surface2);
+  padding:0.65rem 1rem;
+  text-align:left;font-size:0.75rem;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;color:var(--text2);
+  border-bottom:1px solid var(--border);
+}
+td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.td-actions{display:flex;gap:0.4rem;white-space:nowrap}
+
+/* ── Badge/Tag ──────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;
+  padding:0.2rem 0.55rem;
+  border-radius:999px;
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.04em;
+}
+.badge-green{background:rgba(16,185,129,0.15);color:var(--green)}
+.badge-red{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-yellow{background:rgba(245,158,11,0.15);color:var(--yellow)}
+.badge-blue{background:rgba(6,182,212,0.15);color:var(--accent2)}
+.badge-purple{background:rgba(124,58,237,0.15);color:var(--accent3)}
+
+.skill-tag{
+  display:inline-flex;padding:0.2rem 0.55rem;
+  background:rgba(124,58,237,0.12);color:var(--accent3);
+  border:1px solid rgba(124,58,237,0.2);
+  border-radius:6px;font-size:0.75rem;font-weight:600;
+  font-family:'Fira Code',monospace;
+  margin:0.15rem;cursor:pointer;
+  transition:background var(--trans);
+}
+.skill-tag:hover{background:rgba(124,58,237,0.25)}
+.skill-tag.remove::after{content:' ×';opacity:0.6}
+
+/* ── Skill bar ──────────────────────────────────────── */
+.skill-bar-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem}
+.skill-bar-row input[type="text"]{flex:1}
+.skill-bar-row input[type="number"]{width:70px;flex-shrink:0}
+.skill-bar-row .btn-xs{flex-shrink:0}
+.skill-progress{
+  height:4px;background:var(--surface3);border-radius:2px;margin-top:0.2rem;
+}
+.skill-progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width 0.4s}
+
+/* ── Blog editor ────────────────────────────────────── */
+.editor-toolbar{
+  display:flex;flex-wrap:wrap;gap:0.35rem;
+  padding:0.6rem;
+  background:var(--surface2);
+  border:1.5px solid var(--border2);
+  border-bottom:none;
+  border-radius:var(--r-sm) var(--r-sm) 0 0;
+}
+.editor-toolbar button{
+  padding:0.3rem 0.6rem;
+  background:transparent;border:none;cursor:pointer;
+  color:var(--text2);border-radius:4px;font-size:0.8rem;
+  font-weight:600;transition:background var(--trans),color var(--trans);
+}
+.editor-toolbar button:hover{background:var(--surface3);color:var(--text)}
+.editor-toolbar .sep{width:1px;background:var(--border);margin:0 0.2rem;align-self:stretch}
+#post-body{
+  border-radius:0 0 var(--r-sm) var(--r-sm) !important;
+  min-height:320px;
+}
+.preview-pane{
+  background:var(--bg2);
+  border:1.5px solid var(--border2);
+  border-radius:var(--r-sm);
+  padding:1.25rem;
+  min-height:200px;
+  font-size:0.9rem;line-height:1.75;
+  color:var(--text2);
+}
+.preview-pane h1,.preview-pane h2,.preview-pane h3{color:var(--text);font-weight:700;margin:1rem 0 0.5rem}
+.preview-pane code{font-family:'Fira Code',monospace;background:var(--surface2);padding:0.1em 0.3em;border-radius:4px;font-size:0.85em;color:var(--accent3)}
+.preview-pane pre{background:var(--surface2);padding:1rem;border-radius:var(--r-sm);overflow-x:auto;margin:0.75rem 0}
+.preview-pane pre code{background:none;padding:0}
+.preview-pane p{margin-bottom:0.75rem}
+.preview-pane ul,.preview-pane ol{padding-left:1.5rem;margin-bottom:0.75rem}
+.preview-pane blockquote{border-left:3px solid var(--accent);padding-left:1rem;color:var(--text)}
+.editor-tabs{display:flex;gap:0.25rem;margin-bottom:0.5rem}
+.editor-tab{
+  padding:0.4rem 0.9rem;border:none;background:transparent;
+  cursor:pointer;font-size:0.875rem;font-weight:600;
+  color:var(--text2);border-bottom:2px solid transparent;
+  transition:color var(--trans),border-color var(--trans);
+}
+.editor-tab.active{color:var(--accent2);border-color:var(--accent2)}
+
+/* ── Photo upload ────────────────────────────────────── */
+.photo-drop{
+  border:2px dashed var(--border2);
+  border-radius:var(--r);
+  padding:2rem;
+  text-align:center;
+  cursor:pointer;
+  transition:border-color var(--trans),background var(--trans);
+}
+.photo-drop:hover,.photo-drop.dragover{border-color:var(--accent);background:rgba(124,58,237,0.05)}
+.photo-preview{
+  width:80px;height:80px;border-radius:50%;
+  object-fit:cover;margin:0 auto 0.75rem;
+  border:3px solid var(--accent);
+}
+
+/* ── Contact message ─────────────────────────────────── */
+.msg-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.1rem 1.25rem;
+  margin-bottom:0.75rem;
+  transition:border-color var(--trans);
+  display:flex;gap:1rem;align-items:flex-start;
+}
+.msg-card.unread{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.04)}
+.msg-avatar{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;font-size:0.875rem;
+}
+.msg-body{flex:1;min-width:0}
+.msg-header{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.25rem}
+.msg-name{font-weight:700;font-size:0.9rem}
+.msg-email{font-size:0.8rem;color:var(--text2)}
+.msg-date{font-size:0.75rem;color:var(--text3);margin-left:auto}
+.msg-text{font-size:0.875rem;color:var(--text2);line-height:1.6;word-break:break-word}
+.msg-actions{display:flex;gap:0.4rem;margin-top:0.6rem}
+
+/* ── Social editor ───────────────────────────────────── */
+.social-item{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:0.6rem 0;border-bottom:1px solid var(--border);
+}
+.social-item:last-child{border-bottom:none}
+.social-icon-pill{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;flex-shrink:0;
+}
+.social-item input{flex:1}
+.drag-handle{color:var(--text3);cursor:grab;padding:0 0.25rem;font-size:1.1rem}
+
+/* ── Notifications / toast ───────────────────────────── */
+#toast-area{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  z-index:9999;display:flex;flex-direction:column;gap:0.5rem;
+  pointer-events:none;
+}
+.toast{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r-sm);
+  padding:0.75rem 1.1rem;
+  font-size:0.875rem;font-weight:500;
+  box-shadow:var(--shadow2);
+  display:flex;align-items:center;gap:0.5rem;
+  animation:slideIn 0.25s ease,fadeOut 0.4s 2.6s ease forwards;
+  pointer-events:auto;
+  max-width:320px;
+}
+.toast.success{border-color:rgba(16,185,129,0.4);color:var(--green)}
+.toast.error{border-color:rgba(239,68,68,0.4);color:var(--red)}
+.toast.info{border-color:rgba(6,182,212,0.4);color:var(--accent2)}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fadeOut{to{opacity:0;transform:translateX(10px)}}
+
+/* ── Theme toggle ────────────────────────────────────── */
+.theme-btn{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:999px;padding:0.35rem 0.75rem;
+  cursor:pointer;font-size:0.85rem;color:var(--text2);
+  transition:background var(--trans);
+}
+.theme-btn:hover{background:var(--surface3);color:var(--text)}
+
+/* ── Spinner ─────────────────────────────────────────── */
+.spinner{
+  display:inline-block;width:18px;height:18px;
+  border:2px solid var(--border2);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Tabs (project tabs, etc) ────────────────────────── */
+.tabs{display:flex;gap:0.25rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.tab{
+  padding:0.6rem 1.1rem;cursor:pointer;
+  font-size:0.875rem;font-weight:600;color:var(--text2);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  background:none;border-top:none;border-left:none;border-right:none;
+  transition:color var(--trans),border-color var(--trans);
+}
+.tab.active{color:var(--accent2);border-color:var(--accent2)}
+
+/* ── Mobile hamburger ────────────────────────────────── */
+.mob-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--text);font-size:1.25rem;padding:0.25rem}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:49}
+
+/* ── Utilities ───────────────────────────────────────── */
+.flex{display:flex}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}
+.justify-between{justify-content:space-between}.ml-auto{margin-left:auto}
+.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}
+.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}
+.text-sm{font-size:0.875rem}.text-xs{font-size:0.75rem}.text-muted{color:var(--text2)}
+.text-danger{color:var(--red)}.text-success{color:var(--green)}
+.fw-700{font-weight:700}.hidden{display:none!important}
+.divider{height:1px;background:var(--border);margin:1rem 0}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text2)}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:0.75rem}
+.empty-state p{font-size:0.9rem}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-100%;top:0;bottom:0;z-index:50;transition:left var(--trans)}
+  .sidebar.open{left:0}
+  .sidebar-overlay.open{display:block}
+  .mob-toggle{display:block}
+  .form-row,.form-row-3{grid-template-columns:1fr}
+  .content{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Toast area ──────────────────────────────────────────────── -->
+<div id="toast-area"></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- LOGIN SCREEN                                                   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-mark">⚡</div>
+      <h1>SamKell<> CMS</h1>
+      <p>Sign in to manage your portfolio</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem" id="login-btn" onclick="doLogin()">
+      Sign In
+    </button>
+    <p id="login-err" class="text-danger text-sm mt-2 hidden"></p>
+    <p class="text-xs text-muted mt-3" style="text-align:center">
+      Default: admin / admin123 — set <code>ADMIN_PASSWORD</code> env var to change
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- APP SHELL                                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="s-logo">SK</div>
+      <div>
+        <div class="s-title">SamKell<> CMS</div>
+        <div class="s-subtitle">Content Manager</div>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding-bottom:0.5rem">
+      <div class="nav-section">Overview</div>
+      <button class="nav-item active" onclick="showPanel('dashboard')" data-panel="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+
+      <div class="nav-section">Content</div>
+      <button class="nav-item" onclick="showPanel('about')" data-panel="about">
+        <span class="nav-icon">👤</span> About & Bio
+      </button>
+      <button class="nav-item" onclick="showPanel('skills')" data-panel="skills">
+        <span class="nav-icon">⚡</span> Skills
+      </button>
+      <button class="nav-item" onclick="showPanel('projects')" data-panel="projects">
+        <span class="nav-icon">🚀</span> Projects
+      </button>
+
+      <div class="nav-section">Blog</div>
+      <button class="nav-item" onclick="showPanel('blog')" data-panel="blog">
+        <span class="nav-icon">📝</span> All Posts
+      </button>
+      <button class="nav-item" onclick="showPanel('new-post')" data-panel="new-post">
+        <span class="nav-icon">✏️</span> New Post
+      </button>
+
+      <div class="nav-section">Inbox</div>
+      <button class="nav-item" onclick="showPanel('contacts')" data-panel="contacts">
+        <span class="nav-icon">💬</span> Messages
+        <span class="nav-badge hidden" id="unread-badge">0</span>
+      </button>
+
+      <div class="nav-section">Configuration</div>
+      <button class="nav-item" onclick="showPanel('settings')" data-panel="settings">
+        <span class="nav-icon">🎨</span> Site Appearance
+      </button>
+      <button class="nav-item" onclick="showPanel('carousel')" data-panel="carousel">
+        <span class="nav-icon">🖼️</span> Carousel Slides
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar" id="user-initials">A</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name-display">Admin</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="doLogout()">
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+      <button class="mob-toggle" id="mob-toggle">☰</button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+          <span id="theme-icon">☀️</span>
+        </button>
+        <a href="/" target="_blank" class="btn btn-ghost btn-sm">View Site ↗</a>
+      </div>
+    </div>
+
+    <!-- Content area -->
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─────────────────────────────────────────── -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid" id="dash-stats">
+          <div class="stat-card"><div class="stat-label">Blog Posts</div><div class="stat-value" id="stat-posts">—</div><div class="stat-sub">published</div></div>
+          <div class="stat-card"><div class="stat-label">Projects</div><div class="stat-value" id="stat-projects">—</div><div class="stat-sub">showcased</div></div>
+          <div class="stat-card"><div class="stat-label">Skills</div><div class="stat-value" id="stat-skills">—</div><div class="stat-sub">listed</div></div>
+          <div class="stat-card"><div class="stat-label">Messages</div><div class="stat-value" id="stat-msgs">—</div><div class="stat-sub">total received</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">⚡ Quick Actions</div>
+          <div class="flex gap-2" style="flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="showPanel('new-post')">✏️ New Blog Post</button>
+            <button class="btn btn-ghost" onclick="showPanel('about')">👤 Edit About</button>
+            <button class="btn btn-ghost" onclick="showPanel('projects')">🚀 Manage Projects</button>
+            <button class="btn btn-ghost" onclick="showPanel('contacts')">💬 View Messages</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Recent Messages</div>
+          <div id="dash-messages">
+            <div class="empty-state"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ABOUT ─────────────────────────────────────────────── -->
+      <div class="panel" id="panel-about">
+        <div class="card">
+          <div class="card-title">👤 Profile Photo</div>
+          <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-input').click()">
+            <img id="photo-preview-img" src="/static/sammy.jpeg" class="photo-preview" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 rx=%2240%22 fill=%22%237c3aed%22/><text x=%2240%22 y=%2248%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2228%22>SK</text></svg>'"/>
+            <p class="text-sm text-muted mt-2">Click or drag to upload a new photo</p>
+            <p class="text-xs text-muted mt-1">JPG, PNG, WEBP — max 8 MB</p>
+          </div>
+          <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto(this)"/>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Basic Info</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="about-name" placeholder="Your Name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role / Title</label>
+              <input type="text" id="about-role" placeholder="Full-Stack Engineer"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tagline <span class="text-xs text-muted">(hero subtitle)</span></label>
+            <input type="text" id="about-tagline" placeholder="One punchy line about what you do"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio <span class="text-xs text-muted">(About section)</span></label>
+            <textarea id="about-bio" rows="4" placeholder="Write about yourself..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input type="text" id="about-location" placeholder="Lagos, Nigeria"/>
+            </div>
+            <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end">
+              <label class="toggle-row" style="border:none;padding:0;cursor:pointer">
+                <div>
+                  <div class="toggle-label">I'm available for Work</div>
+                  <div class="toggle-sub">Shows green badge on site</div>
+                </div>
+                <label class="toggle" style="margin-left:1rem">
+                  <input type="checkbox" id="about-available"/>
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔗 Social Links</div>
+          <div id="social-list"></div>
+          <button class="btn btn-ghost btn-sm mt-3" onclick="addSocialItem()">+ Add Link</button>
+        </div>
+
+        <div class="flex gap-2 justify-between">
+          <button class="btn btn-ghost" onclick="loadAbout()">↺ Reset Changes</button>
+          <button class="btn btn-primary" onclick="saveAbout()">💾 Save About</button>
+        </div>
+      </div>
+
+      <!-- ─── SKILLS ────────────────────────────────────────────── -->
+      <div class="panel" id="panel-skills">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="fw-700">Skills</h2>
+          <button class="btn btn-primary" onclick="addSkillGroup()">+ Add Group</button>
+        </div>
+        <div id="skills-editor"></div>
+        <div class="flex gap-2 justify-between mt-4">
+          <button class="btn btn-ghost" onclick="loadSkills()">↺ Reset</button>
+          <button class="btn btn-primary" onclick="saveSkills()">💾 Save Skills</button>
+        </div>
+      </div>
+
+      <!-- ─── PROJECTS ──────────────────────────────────────────── -->
+      <div class="panel" id="panel-projects">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="fw-700">Projects</h2>
+          <button class="btn btn-primary" onclick="addProject()">+ Add Project</button>
+        </div>
+        <div id="projects-editor"></div>
+        <div class="flex gap-2 justify-between mt-4">
+          <button class="btn btn-ghost" onclick="loadProjects()">↺ Reset</button>
+          <button class="btn btn-primary" onclick="saveProjects()">💾 Save Projects</button>
+        </div>
+      </div>
+
+      <!-- ─── BLOG LIST ─────────────────────────────────────────── -->
+      <div class="panel" id="panel-blog">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="fw-700">Blog Posts</h2>
+          <button class="btn btn-primary" onclick="showPanel('new-post')">✏️ New Post</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th><th>Slug</th><th>Date</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="blog-table-body">
+              <tr><td colspan="4" class="text-muted text-sm" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ─── NEW / EDIT POST ───────────────────────────────────── -->
+      <div class="panel" id="panel-new-post">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="fw-700" id="post-form-title">New Post</h2>
+          <button class="btn btn-ghost btn-sm" onclick="showPanel('blog')">← Back to Posts</button>
+        </div>
+        <div class="card">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" id="post-title" placeholder="Post title" oninput="autoSlug()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Slug <span class="text-xs text-muted">(URL key)</span></label>
+              <input type="text" id="post-slug" placeholder="my-post-slug"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="date" id="post-date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Excerpt <span class="text-xs text-muted">(card preview)</span></label>
+              <input type="text" id="post-excerpt" placeholder="One sentence summary"/>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding-bottom:0.75rem">
+          <div class="card-title">Content <span class="text-xs text-muted fw-400">Markdown supported</span></div>
+          <div class="editor-tabs">
+            <button class="editor-tab active" onclick="switchEditorTab('write',this)">Write</button>
+            <button class="editor-tab" onclick="switchEditorTab('preview',this)">Preview</button>
+          </div>
+          <div id="editor-write-pane">
+            <div class="editor-toolbar">
+              <button onclick="insertMd('**','**')"><b>B</b></button>
+              <button onclick="insertMd('*','*')"><i>I</i></button>
+              <button onclick="insertMd('`','`')">Code</button>
+              <button onclick="insertMd('\n```\n','\n```')">Block</button>
+              <div class="sep"></div>
+              <button onclick="insertMd('# ','')">H1</button>
+              <button onclick="insertMd('## ','')">H2</button>
+              <button onclick="insertMd('### ','')">H3</button>
+              <div class="sep"></div>
+              <button onclick="insertMd('- ','')">List</button>
+              <button onclick="insertMd('[','](url)')">Link</button>
+              <button onclick="insertMd('> ','')">Quote</button>
+            </div>
+            <textarea id="post-body" placeholder="Write your post in Markdown..."></textarea>
+          </div>
+          <div id="editor-preview-pane" class="preview-pane hidden"></div>
+        </div>
+        <div class="flex gap-2 justify-between">
+          <button class="btn btn-ghost" onclick="clearPostForm()">Clear</button>
+          <button class="btn btn-primary" id="save-post-btn" onclick="savePost()">💾 Publish Post</button>
+        </div>
+        <input type="hidden" id="editing-slug" value=""/>
+      </div>
+
+      <!-- ─── CONTACTS ──────────────────────────────────────────── -->
+      <div class="panel" id="panel-contacts">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="fw-700">Messages</h2>
+          <div class="flex gap-2">
+            <span id="contact-count" class="badge badge-blue"></span>
+          </div>
+        </div>
+        <div id="contacts-list">
+          <div class="empty-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ─── SETTINGS ──────────────────────────────────────────── -->
+      <div class="panel" id="panel-settings">
+        <div class="tabs" id="settings-tabs">
+          <button class="tab active" onclick="switchSettingsTab('colors',this)">🎨 Colors</button>
+          <button class="tab" onclick="switchSettingsTab('typography',this)">✏️ Typography</button>
+          <button class="tab" onclick="switchSettingsTab('layout',this)">📐 Layout</button>
+          <button class="tab" onclick="switchSettingsTab('misc',this)">⚙️ Misc</button>
+        </div>
+
+        <!-- Colors tab -->
+        <div id="stab-colors">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+            <div class="card">
+              <div class="card-title">🌙 Dark Theme</div>
+              <div class="form-group"><label class="form-label">Background</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-dark-bg" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-dark-bg-t" placeholder="#0d0f1a" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Background Alt</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-dark-bgalt" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-dark-bgalt-t" placeholder="#111428" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Surface / Cards</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-dark-surf" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-dark-surf-t" placeholder="#161929" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Text Primary</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-dark-txt" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-dark-txt-t" placeholder="#f0f2ff" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Text Secondary</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-dark-txt2" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-dark-txt2-t" placeholder="#8b92b8" style="flex:1"/></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">☀️ Light Theme</div>
+              <div class="form-group"><label class="form-label">Background</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-light-bg" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-light-bg-t" placeholder="#f8f9ff" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Background Alt</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-light-bgalt" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-light-bgalt-t" placeholder="#eef0fb" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Surface / Cards</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-light-surf" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-light-surf-t" placeholder="#ffffff" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Text Primary</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-light-txt" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-light-txt-t" placeholder="#0d0f1a" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Text Secondary</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-light-txt2" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-light-txt2-t" placeholder="#4a5280" style="flex:1"/></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ Accent Colors (both themes)</div>
+            <div class="form-row-3">
+              <div class="form-group"><label class="form-label">Accent 1 — Purple</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-acc1" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-acc1-t" placeholder="#7c3aed" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Accent 2 — Cyan</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-acc2" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-acc2-t" placeholder="#06b6d4" style="flex:1"/></div></div>
+              <div class="form-group"><label class="form-label">Accent 3 — Lavender</label><div style="display:flex;gap:0.5rem"><input type="color" id="s-acc3" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-acc3-t" placeholder="#f0abfc" style="flex:1"/></div></div>
+            </div>
+            <div class="form-group mt-2">
+              <label class="form-label">Gradient Direction</label>
+              <select id="s-grad-angle">
+                <option value="135deg">↗ 135° (default diagonal)</option>
+                <option value="90deg">→ 90° (left to right)</option>
+                <option value="180deg">↓ 180° (top to bottom)</option>
+                <option value="45deg">↗ 45°</option>
+                <option value="225deg">↙ 225°</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔵 Navbar Bottom Border</div>
+            <div class="form-group"><div style="display:flex;gap:0.5rem;align-items:center"><input type="color" id="s-nav-border" style="width:48px;height:36px;padding:2px;border-radius:6px;border:1px solid var(--border2);background:none;cursor:pointer"/><input type="text" id="s-nav-border-t" placeholder="rgba(230,14,91,0.51)" style="flex:1"/></div><p class="form-hint">Supports any CSS color including rgba()</p></div>
+          </div>
+        </div>
+
+        <!-- Typography tab -->
+        <div id="stab-typography" class="hidden">
+          <div class="card">
+            <div class="card-title">✏️ Fonts</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Body Font</label>
+                <select id="s-font-body">
+                  <option value="Inter">Inter (default)</option>
+                  <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                  <option value="DM Sans">DM Sans</option>
+                  <option value="Outfit">Outfit</option>
+                  <option value="Sora">Sora</option>
+                  <option value="Nunito">Nunito</option>
+                  <option value="Poppins">Poppins</option>
+                  <option value="Raleway">Raleway</option>
+                  <option value="Space Grotesk">Space Grotesk</option>
+                  <option value="Manrope">Manrope</option>
+                </select>
+                <p class="form-hint">Loaded from Google Fonts</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Code / Monospace Font</label>
+                <select id="s-font-code">
+                  <option value="Fira Code">Fira Code (default)</option>
+                  <option value="JetBrains Mono">JetBrains Mono</option>
+                  <option value="Source Code Pro">Source Code Pro</option>
+                  <option value="IBM Plex Mono">IBM Plex Mono</option>
+                  <option value="Roboto Mono">Roboto Mono</option>
+                  <option value="Cascadia Code">Cascadia Code</option>
+                </select>
+              </div>
+            </div>
+            <div class="card" style="background:var(--bg2);border:1px solid var(--border);margin-top:0.5rem">
+              <p style="font-size:1.25rem;font-weight:700;margin-bottom:0.5rem">The quick brown fox jumps</p>
+              <p style="font-family:monospace;color:var(--text2);font-size:0.9rem">const hello = "world"; // code preview</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layout tab -->
+        <div id="stab-layout" class="hidden">
+          <div class="card">
+            <div class="card-title">📐 Border Radius</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Card Radius (--radius)</label>
+                <select id="s-radius-lg">
+                  <option value="8px">8px — Sharp</option>
+                  <option value="12px">12px — Slight</option>
+                  <option value="16px">16px — Default</option>
+                  <option value="20px">20px — Rounded</option>
+                  <option value="24px">24px — Very Rounded</option>
+                  <option value="999px">999px — Pill</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Input / Small Radius (--radius-sm)</label>
+                <select id="s-radius-sm">
+                  <option value="4px">4px — Sharp</option>
+                  <option value="6px">6px — Slight</option>
+                  <option value="8px">8px — Default</option>
+                  <option value="12px">12px — Rounded</option>
+                  <option value="16px">16px — Very Rounded</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ Animation Speed</div>
+            <div class="form-group">
+              <label class="form-label">Transition Speed</label>
+              <select id="s-transition">
+                <option value="0.15s">0.15s — Snappy</option>
+                <option value="0.2s">0.2s — Fast</option>
+                <option value="0.3s">0.3s — Default</option>
+                <option value="0.45s">0.45s — Smooth</option>
+                <option value="0.6s">0.6s — Slow</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Misc tab -->
+        <div id="stab-misc" class="hidden">
+          <div class="card">
+            <div class="card-title">💬 WhatsApp Number</div>
+            <div class="form-group">
+              <label class="form-label">Phone number (with country code)</label>
+              <input type="text" id="s-wa-number" placeholder="+2348168642824"/>
+              <p class="form-hint">Used for the floating WhatsApp button. Format: +countrycode number</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🎨 CSS Preview</div>
+            <p class="text-sm text-muted mb-3">The generated CSS override that will be applied to your site.</p>
+            <textarea id="s-css-preview" rows="14" style="font-family:var(--font-code,monospace);font-size:0.8rem" readonly></textarea>
+            <button class="btn btn-ghost btn-sm mt-2" onclick="refreshCSSPreview()">↺ Refresh Preview</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="flex gap-2 justify-between">
+          <button class="btn btn-ghost" onclick="loadSettings_()">↺ Reset to Saved</button>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost" onclick="resetSettingsDefaults()">Reset to Defaults</button>
+            <button class="btn btn-primary" onclick="saveSettings()">💾 Save & Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CAROUSEL ──────────────────────────────────────────── -->
+      <div class="panel" id="panel-carousel">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h2 class="fw-700">Carousel Slides</h2>
+            <p class="text-sm text-muted mt-1">Up to 4 slides. Slide 1 is always the hero intro — cannot be deleted.</p>
+          </div>
+          <button class="btn btn-primary" id="add-slide-btn" onclick="addCarouselSlide()">+ Add Slide</button>
+        </div>
+        <div id="carousel-admin-list"></div>
+        <div class="flex gap-2 justify-between mt-4">
+          <button class="btn btn-ghost" onclick="loadCarouselAdmin()">↺ Reset</button>
+          <button class="btn btn-primary" onclick="saveCarousel()">💾 Save Carousel</button>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE & CONFIG
+═══════════════════════════════════════════════════════════════ */
+const API = '/api/admin';
+let currentPanel = 'dashboard';
+let skillsData = [];
+let projectsData = [];
+let aboutData = {};
+let allContacts = [];
+
+/* ═══════════════════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const t = localStorage.getItem('cms-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  updateThemeIcon(t);
+})();
+
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('cms-theme', next);
+  updateThemeIcon(next);
+}
+function updateThemeIcon(t){ document.getElementById('theme-icon').textContent = t==='dark'?'☀️':'🌙'; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════ */
+function toast(msg, type='info'){
+  const area = document.getElementById('toast-area');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icon = {success:'✅',error:'❌',info:'ℹ️'}[type]||'ℹ️';
+  t.innerHTML = `<span>${icon}</span> ${msg}`;
+  area.appendChild(t);
+  setTimeout(()=>t.remove(), 3200);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FETCH HELPERS
+═══════════════════════════════════════════════════════════════ */
+async function apiFetch(url, opts={}){
+  const res = await fetch(url, {credentials:'include', ...opts,
+    headers:{'Content-Type':'application/json',...(opts.headers||{})}});
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+async function apiGet(path){ return apiFetch(API+path); }
+async function apiPut(path,body){ return apiFetch(API+path,{method:'PUT',body:JSON.stringify(body)}); }
+async function apiPost(path,body){ return apiFetch(API+path,{method:'POST',body:JSON.stringify(body)}); }
+async function apiDel(path){ return apiFetch(API+path,{method:'DELETE'}); }
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════════════════════ */
+async function checkAuth(){
+  try{
+    const d = await apiGet('/me');
+    showApp(d.username);
+  } catch(e){
+    showLogin();
+  }
+}
+
+function showLogin(){
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app').classList.remove('visible');
+}
+function showApp(username){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  if(username){
+    document.getElementById('user-name-display').textContent = username;
+    document.getElementById('user-initials').textContent = username[0].toUpperCase();
+  }
+  loadDashboard();
+}
+
+async function doLogin(){
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  err.classList.add('hidden');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try{
+    await fetch('/api/admin/login',{method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:u,password:p})});
+    // re-check auth to confirm
+    const d = await apiGet('/me');
+    showApp(d.username);
+  } catch(e){
+    err.textContent = 'Invalid username or password'; err.classList.remove('hidden');
+  } finally{
+    btn.disabled=false; btn.textContent='Sign In';
+  }
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e=>{
+  if(e.key==='Enter') doLogin();
+});
+
+async function doLogout(){
+  await fetch('/api/admin/logout',{method:'POST',credentials:'include'});
+  showLogin();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════════ */
+const panelTitles = {
+  dashboard:'Dashboard', about:'About & Bio', skills:'Skills',
+  projects:'Projects', blog:'Blog Posts', 'new-post':'New Post',
+  contacts:'Messages', settings:'Site Appearance', carousel:'Carousel Slides'
+};
+
+function showPanel(name){
+  // hide all panels
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  // update nav
+  document.querySelectorAll('.nav-item').forEach(b=>{
+    b.classList.toggle('active', b.dataset.panel===name);
+  });
+  document.getElementById('topbar-title').textContent = panelTitles[name]||name;
+  currentPanel = name;
+  // close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  // load data
+  if(name==='about') loadAbout();
+  else if(name==='skills') loadSkills();
+  else if(name==='projects') loadProjects();
+  else if(name==='blog') loadBlogList();
+  else if(name==='contacts') loadContacts();
+  else if(name==='settings') loadSettings_();
+  else if(name==='carousel') loadCarouselAdmin();
+  else if(name==='new-post'){ clearPostForm(); }
+}
+
+// Mobile sidebar
+document.getElementById('mob-toggle').onclick = ()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+};
+document.getElementById('sidebar-overlay').onclick = ()=>{
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════════════════════ */
+async function loadDashboard(){
+  try{
+    const [posts,projects,skills,contacts] = await Promise.all([
+      apiGet('/posts'), apiGet('/projects'), apiGet('/skills'), apiGet('/contacts')
+    ]);
+    document.getElementById('stat-posts').textContent = (posts||[]).length;
+    document.getElementById('stat-projects').textContent = (projects||[]).length;
+    const skillCount = (skills||[]).reduce((a,g)=>a+(g.skills||[]).length,0);
+    document.getElementById('stat-skills').textContent = skillCount;
+    document.getElementById('stat-msgs').textContent = (contacts||[]).length;
+    allContacts = contacts||[];
+    updateUnreadBadge();
+    renderDashMessages(contacts.slice(-5).reverse());
+  } catch(e){ console.error(e); }
+}
+
+function renderDashMessages(msgs){
+  const el = document.getElementById('dash-messages');
+  if(!msgs||!msgs.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">💬</div><p>No messages yet</p></div>'; return; }
+  el.innerHTML = msgs.slice(0,4).map(m=>`
+    <div class="msg-card ${m.read?'':'unread'}">
+      <div class="msg-avatar">${(m.name||'?')[0].toUpperCase()}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${esc(m.name)}</span>
+          <span class="msg-email">&lt;${esc(m.email)}&gt;</span>
+          ${m.read?'':'<span class="badge badge-purple">New</span>'}
+          <span class="msg-date">${fmtDate(m.created_at)}</span>
+        </div>
+        <div class="msg-text">${esc(m.message).substring(0,140)}${m.message.length>140?'…':''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function updateUnreadBadge(){
+  const count = allContacts.filter(c=>!c.read).length;
+  const badge = document.getElementById('unread-badge');
+  badge.textContent = count;
+  badge.classList.toggle('hidden', count===0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════════════════════════ */
+async function loadAbout(){
+  try{
+    aboutData = await apiGet('/about');
+    document.getElementById('about-name').value = aboutData.name||'';
+    document.getElementById('about-role').value = aboutData.role||'';
+    document.getElementById('about-tagline').value = aboutData.tagline||'';
+    document.getElementById('about-bio').value = aboutData.bio||'';
+    document.getElementById('about-location').value = aboutData.location||'';
+    document.getElementById('about-available').checked = !!aboutData.available;
+    if(aboutData.photo) document.getElementById('photo-preview-img').src = aboutData.photo;
+    renderSocials(aboutData.social||[]);
+  } catch(e){ toast('Failed to load about data','error'); }
+}
+
+function renderSocials(socials){
+  const list = document.getElementById('social-list');
+  const ICONS = {github:'🐙',linkedin:'💼',twitter:'🐦',whatsapp:'💬',mail:'✉️',youtube:'▶️',instagram:'📸'};
+  list.innerHTML = socials.map((s,i)=>`
+    <div class="social-item" data-idx="${i}">
+      <div class="social-icon-pill">${ICONS[s.icon]||'🔗'}</div>
+      <select style="width:100px;flex-shrink:0" onchange="updateSocial(${i},'icon',this.value)">
+        ${['github','linkedin','twitter','whatsapp','mail','youtube','instagram'].map(ic=>`
+          <option value="${ic}" ${s.icon===ic?'selected':''}>${ic}</option>`).join('')}
+      </select>
+      <input type="text" placeholder="Label" value="${esc(s.label||'')}" style="width:90px" onchange="updateSocial(${i},'label',this.value)"/>
+      <input type="url" placeholder="https://..." value="${esc(s.url||'')}" style="flex:1" onchange="updateSocial(${i},'url',this.value)"/>
+      <button class="btn btn-danger btn-xs" onclick="removeSocial(${i})">✕</button>
+    </div>`).join('');
+}
+
+function updateSocial(idx,key,val){
+  if(!aboutData.social) aboutData.social=[];
+  aboutData.social[idx][key]=val;
+  renderSocials(aboutData.social);
+}
+function removeSocial(idx){ aboutData.social.splice(idx,1); renderSocials(aboutData.social); }
+function addSocialItem(){
+  if(!aboutData.social) aboutData.social=[];
+  aboutData.social.push({label:'',url:'',icon:'github'});
+  renderSocials(aboutData.social);
+}
+
+async function saveAbout(){
+  aboutData.name = document.getElementById('about-name').value.trim();
+  aboutData.role = document.getElementById('about-role').value.trim();
+  aboutData.tagline = document.getElementById('about-tagline').value.trim();
+  aboutData.bio = document.getElementById('about-bio').value.trim();
+  aboutData.location = document.getElementById('about-location').value.trim();
+  aboutData.available = document.getElementById('about-available').checked;
+  try{
+    await apiPut('/about', aboutData);
+    toast('About saved successfully','success');
+  } catch(e){ toast('Save failed: '+e.message,'error'); }
+}
+
+async function uploadPhoto(input){
+  const file = input.files[0]; if(!file) return;
+  const formData = new FormData();
+  formData.append('photo', file);
+  try{
+    const res = await fetch(API+'/about/photo',{method:'POST',credentials:'include',body:formData});
+    const d = await res.json();
+    if(!res.ok) throw new Error(d.error);
+    document.getElementById('photo-preview-img').src = d.url+'?t='+Date.now();
+    toast('Photo uploaded','success');
+  } catch(e){ toast('Upload failed: '+e.message,'error'); }
+}
+
+// Drag & drop photo
+const photoDrop = document.getElementById('photo-drop');
+photoDrop.addEventListener('dragover', e=>{ e.preventDefault(); photoDrop.classList.add('dragover'); });
+photoDrop.addEventListener('dragleave', ()=> photoDrop.classList.remove('dragover'));
+photoDrop.addEventListener('drop', e=>{
+  e.preventDefault(); photoDrop.classList.remove('dragover');
+  const file = e.dataTransfer.files[0]; if(!file) return;
+  const dt = new DataTransfer(); dt.items.add(file);
+  document.getElementById('photo-input').files = dt.files;
+  uploadPhoto(document.getElementById('photo-input'));
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   SKILLS
+═══════════════════════════════════════════════════════════════ */
+async function loadSkills(){
+  try{
+    skillsData = await apiGet('/skills');
+    renderSkillsEditor();
+  } catch(e){ toast('Failed to load skills','error'); }
+}
+
+function renderSkillsEditor(){
+  const el = document.getElementById('skills-editor');
+  el.innerHTML = skillsData.map((group,gi)=>`
+    <div class="card" data-gi="${gi}">
+      <div class="flex items-center gap-2 mb-3">
+        <input type="text" value="${esc(group.icon||'⚙️')}" style="width:52px;text-align:center" onchange="skillsData[${gi}].icon=this.value"/>
+        <input type="text" value="${esc(group.group||'')}" placeholder="Group name" style="flex:1;font-weight:700" onchange="skillsData[${gi}].group=this.value"/>
+        <button class="btn btn-danger btn-sm" onclick="removeSkillGroup(${gi})">Remove Group</button>
+      </div>
+      <div id="sg-${gi}">
+        ${(group.skills||[]).map((sk,si)=>skillRow(gi,si,sk)).join('')}
+      </div>
+      <button class="btn btn-ghost btn-sm mt-2" onclick="addSkill(${gi})">+ Add Skill</button>
+    </div>`).join('');
+}
+
+function skillRow(gi,si,sk){
+  return `<div class="skill-bar-row" data-si="${si}">
+    <input type="text" value="${esc(sk.name||'')}" placeholder="Skill name" onchange="skillsData[${gi}].skills[${si}].name=this.value"/>
+    <input type="number" value="${sk.level||80}" min="1" max="100" onchange="skillsData[${gi}].skills[${si}].level=+this.value; updateSkillBar(${gi},${si},+this.value)"/>
+    <button class="btn btn-danger btn-xs" onclick="removeSkill(${gi},${si})">✕</button>
+  </div>`;
+}
+
+function updateSkillBar(gi,si,val){ skillsData[gi].skills[si].level=val; }
+function addSkill(gi){ skillsData[gi].skills.push({name:'',level:80}); renderSkillsEditor(); }
+function removeSkill(gi,si){ skillsData[gi].skills.splice(si,1); renderSkillsEditor(); }
+function removeSkillGroup(gi){ skillsData.splice(gi,1); renderSkillsEditor(); }
+function addSkillGroup(){ skillsData.push({group:'New Group',icon:'⚡',skills:[]}); renderSkillsEditor(); }
+
+async function saveSkills(){
+  // sync current input values before save
+  try{
+    await apiPut('/skills', skillsData);
+    toast('Skills saved','success');
+  } catch(e){ toast('Save failed: '+e.message,'error'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════════════════════ */
+async function loadProjects(){
+  try{
+    projectsData = await apiGet('/projects');
+    renderProjectsEditor();
+  } catch(e){ toast('Failed to load projects','error'); }
+}
+
+function renderProjectsEditor(){
+  const el = document.getElementById('projects-editor');
+  if(!projectsData.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">🚀</div><p>No projects yet — add one!</p></div>'; return;
+  }
+  el.innerHTML = projectsData.map((p,i)=>`
+    <div class="card" data-pi="${i}">
+      <div class="flex justify-between items-center mb-3">
+        <span class="fw-700 text-sm">Project #${i+1} ${p.featured?'<span class="badge badge-purple">Featured</span>':''}</span>
+        <div class="flex gap-2">
+          ${i>0?`<button class="btn btn-ghost btn-xs" onclick="moveProject(${i},-1)">↑</button>`:''}
+          ${i<projectsData.length-1?`<button class="btn btn-ghost btn-xs" onclick="moveProject(${i},1)">↓</button>`:''}
+          <button class="btn btn-danger btn-xs" onclick="removeProject(${i})">Remove</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" value="${esc(p.title||'')}" placeholder="Project name" onchange="projectsData[${i}].title=this.value"/>
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end">
+          <label class="toggle-row" style="border:none;padding:0;cursor:pointer;width:100%">
+            <div><div class="toggle-label">Featured</div></div>
+            <label class="toggle">
+              <input type="checkbox" ${p.featured?'checked':''} onchange="projectsData[${i}].featured=this.checked"/>
+              <div class="toggle-track"></div><div class="toggle-thumb"></div>
+            </label>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea rows="2" onchange="projectsData[${i}].description=this.value">${esc(p.description||'')}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Live URL</label>
+          <input type="url" value="${esc(p.live||'')}" placeholder="https://..." onchange="projectsData[${i}].live=this.value"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">GitHub URL</label>
+          <input type="url" value="${esc(p.github||'')}" placeholder="https://github.com/..." onchange="projectsData[${i}].github=this.value"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tech Tags <span class="text-xs text-muted">(press Enter to add)</span></label>
+        <div style="display:flex;flex-wrap:wrap;gap:0.25rem;margin-bottom:0.4rem" id="tags-${i}">
+          ${(p.tags||[]).map(t=>`<span class="skill-tag remove" onclick="removeTag(${i},'${esc(t)}')">${esc(t)}</span>`).join('')}
+        </div>
+        <input type="text" placeholder="Add tag…" onkeydown="if(event.key==='Enter'){addTag(${i},this.value);this.value='';event.preventDefault()}"/>
+      </div>
+    </div>`).join('');
+}
+
+function addTag(pi,val){
+  val=val.trim(); if(!val) return;
+  if(!projectsData[pi].tags) projectsData[pi].tags=[];
+  projectsData[pi].tags.push(val);
+  renderProjectsEditor();
+}
+function removeTag(pi,tag){ projectsData[pi].tags=projectsData[pi].tags.filter(t=>t!==tag); renderProjectsEditor(); }
+function removeProject(i){ projectsData.splice(i,1); renderProjectsEditor(); }
+function moveProject(i,dir){ const t=projectsData[i]; projectsData[i]=projectsData[i+dir]; projectsData[i+dir]=t; renderProjectsEditor(); }
+function addProject(){
+  projectsData.push({title:'',description:'',tags:[],live:'',github:'',featured:false});
+  renderProjectsEditor();
+}
+
+async function saveProjects(){
+  try{
+    await apiPut('/projects', projectsData);
+    toast('Projects saved','success');
+  } catch(e){ toast('Save failed: '+e.message,'error'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BLOG
+═══════════════════════════════════════════════════════════════ */
+async function loadBlogList(){
+  const tbody = document.getElementById('blog-table-body');
+  try{
+    const posts = await apiGet('/posts');
+    if(!posts||!posts.length){
+      tbody.innerHTML='<tr><td colspan="4"><div class="empty-state"><div class="empty-icon">📝</div><p>No posts yet</p></div></td></tr>'; return;
+    }
+    tbody.innerHTML = posts.map(p=>`
+      <tr>
+        <td><span class="fw-700">${esc(p.title)}</span></td>
+        <td><code style="font-family:var(--font-code,monospace);font-size:0.8rem;color:var(--accent3)">${esc(p.slug)}</code></td>
+        <td class="text-muted text-sm">${fmtDate(p.date)}</td>
+        <td class="td-actions">
+          <button class="btn btn-ghost btn-xs" onclick="editPost('${esc(p.slug)}')">Edit</button>
+          <button class="btn btn-danger btn-xs" onclick="deletePost('${esc(p.slug)}','${esc(p.title)}')">Delete</button>
+        </td>
+      </tr>`).join('');
+  } catch(e){ tbody.innerHTML='<tr><td colspan="4" class="text-danger">Failed to load posts</td></tr>'; }
+}
+
+async function editPost(slug){
+  showPanel('new-post');
+  document.getElementById('post-form-title').textContent = 'Edit Post';
+  document.getElementById('save-post-btn').textContent = '💾 Update Post';
+  document.getElementById('editing-slug').value = slug;
+  try{
+    const post = await apiGet('/posts/'+slug);
+    document.getElementById('post-title').value = post.title||'';
+    document.getElementById('post-slug').value = post.slug||'';
+    document.getElementById('post-date').value = post.date||'';
+    document.getElementById('post-excerpt').value = post.excerpt||'';
+    document.getElementById('post-body').value = post.body||'';
+  } catch(e){ toast('Failed to load post','error'); }
+}
+
+async function deletePost(slug, title){
+  if(!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  try{
+    await apiDel('/posts/'+slug);
+    toast('Post deleted','success');
+    loadBlogList();
+  } catch(e){ toast('Delete failed: '+e.message,'error'); }
+}
+
+function clearPostForm(){
+  document.getElementById('post-form-title').textContent = 'New Post';
+  document.getElementById('save-post-btn').textContent = '💾 Publish Post';
+  document.getElementById('editing-slug').value = '';
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-slug').value = '';
+  document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('post-excerpt').value = '';
+  document.getElementById('post-body').value = '';
+}
+
+function autoSlug(){
+  const editingSlug = document.getElementById('editing-slug').value;
+  if(editingSlug) return; // don't auto-change slug when editing
+  const title = document.getElementById('post-title').value;
+  document.getElementById('post-slug').value = slugify(title);
+}
+
+function slugify(s){
+  return s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/[\s_]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+
+async function savePost(){
+  const editingSlug = document.getElementById('editing-slug').value;
+  const body = {
+    title: document.getElementById('post-title').value.trim(),
+    slug:  document.getElementById('post-slug').value.trim(),
+    date:  document.getElementById('post-date').value,
+    excerpt: document.getElementById('post-excerpt').value.trim(),
+    body:  document.getElementById('post-body').value,
+  };
+  if(!body.title||!body.slug||!body.body){ toast('Title, slug, and content are required','error'); return; }
+  try{
+    if(editingSlug){
+      await apiPut('/posts/'+editingSlug, body);
+      toast('Post updated','success');
+    } else {
+      await apiPost('/posts', body);
+      toast('Post published','success');
+    }
+    showPanel('blog');
+  } catch(e){ toast('Save failed: '+e.message,'error'); }
+}
+
+// Editor tabs
+function switchEditorTab(tab, btn){
+  document.querySelectorAll('.editor-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(tab==='preview'){
+    const body = document.getElementById('post-body').value;
+    document.getElementById('editor-preview-pane').innerHTML = simpleMarkdown(body);
+    document.getElementById('editor-write-pane').classList.add('hidden');
+    document.getElementById('editor-preview-pane').classList.remove('hidden');
+  } else {
+    document.getElementById('editor-write-pane').classList.remove('hidden');
+    document.getElementById('editor-preview-pane').classList.add('hidden');
+  }
+}
+
+function insertMd(before, after){
+  const ta = document.getElementById('post-body');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.substring(s,e);
+  ta.value = ta.value.substring(0,s) + before + sel + after + ta.value.substring(e);
+  ta.focus();
+  ta.selectionStart = s + before.length;
+  ta.selectionEnd = s + before.length + sel.length;
+}
+
+// Minimal markdown preview (no dependency)
+function simpleMarkdown(md){
+  return md
+    .replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<[hupbali])/gm,'<p>')
+    .replace(/<p><\/p>/g,'');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTACTS
+═══════════════════════════════════════════════════════════════ */
+async function loadContacts(){
+  const el = document.getElementById('contacts-list');
+  try{
+    allContacts = await apiGet('/contacts');
+    updateUnreadBadge();
+    const count = document.getElementById('contact-count');
+    count.textContent = `${allContacts.length} total`;
+    if(!allContacts.length){
+      el.innerHTML='<div class="empty-state"><div class="empty-icon">💬</div><p>No messages yet — your contact form submissions will appear here.</p></div>'; return;
+    }
+    const sorted = [...allContacts].reverse();
+    el.innerHTML = sorted.map(m=>`
+      <div class="msg-card ${m.read?'':'unread'}" id="msg-${m.id}">
+        <div class="msg-avatar">${(m.name||'?')[0].toUpperCase()}</div>
+        <div class="msg-body">
+          <div class="msg-header">
+            <span class="msg-name">${esc(m.name)}</span>
+            <span class="msg-email">&lt;${esc(m.email)}&gt;</span>
+            ${m.read?'':'<span class="badge badge-purple">New</span>'}
+            <span class="msg-date">${fmtDate(m.created_at)}</span>
+          </div>
+          <div class="msg-text">${esc(m.message)}</div>
+          <div class="msg-actions">
+            ${!m.read?`<button class="btn btn-success btn-xs" onclick="markRead('${m.id}')">✓ Mark Read</button>`:''}
+            <a href="mailto:${esc(m.email)}?subject=Re: your message" class="btn btn-ghost btn-xs">Reply via Email</a>
+            <button class="btn btn-danger btn-xs" onclick="deleteContact('${m.id}')">Delete</button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e){ el.innerHTML='<p class="text-danger">Failed to load messages</p>'; }
+}
+
+async function markRead(id){
+  try{
+    await apiFetch(API+'/contacts/'+id+'/read',{method:'PUT'});
+    loadContacts();
+  } catch(e){ toast('Failed to mark read','error'); }
+}
+
+async function deleteContact(id){
+  if(!confirm('Delete this message?')) return;
+  try{
+    await apiDel('/contacts/'+id);
+    toast('Message deleted','success');
+    loadContacts();
+  } catch(e){ toast('Delete failed','error'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════════════ */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(s){
+  if(!s) return '';
+  try{ return new Date(s).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
+  catch(e){ return s; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════════════════════ */
+let settingsData = {};
+const SETTINGS_DEFAULTS = {
+  dark_bg:'#0d0f1a', dark_bg_alt:'#111428', dark_surface:'#161929',
+  dark_accent1:'#7c3aed', dark_accent2:'#06b6d4', dark_accent3:'#f0abfc',
+  dark_text_primary:'#f0f2ff', dark_text_secondary:'#8b92b8',
+  light_bg:'#f8f9ff', light_bg_alt:'#eef0fb', light_surface:'#ffffff',
+  light_accent1:'#7c3aed', light_accent2:'#06b6d4',
+  light_text_primary:'#0d0f1a', light_text_secondary:'#4a5280',
+  font_body:'Inter', font_code:'Fira Code',
+  radius_lg:'16px', radius_sm:'8px',
+  gradient_angle:'135deg',
+  whatsapp_number:'+2348168642824',
+  nav_border_color:'rgba(230,14,91,0.51)',
+  transition_speed:'0.3s'
+};
+
+// Bind colour pickers ↔ text inputs
+function bindColorPair(pickerId, textId, key) {
+  const picker = document.getElementById(pickerId);
+  const text   = document.getElementById(textId);
+  if (!picker || !text) return;
+  picker.addEventListener('input', () => { text.value = picker.value; settingsData[key] = picker.value; refreshCSSPreview(); });
+  text.addEventListener('change', () => { try { picker.value = text.value; } catch(e){} settingsData[key] = text.value; refreshCSSPreview(); });
+}
+
+function initSettingsBindings() {
+  bindColorPair('s-dark-bg',   's-dark-bg-t',   'dark_bg');
+  bindColorPair('s-dark-bgalt','s-dark-bgalt-t', 'dark_bg_alt');
+  bindColorPair('s-dark-surf', 's-dark-surf-t',  'dark_surface');
+  bindColorPair('s-dark-txt',  's-dark-txt-t',   'dark_text_primary');
+  bindColorPair('s-dark-txt2', 's-dark-txt2-t',  'dark_text_secondary');
+  bindColorPair('s-light-bg',  's-light-bg-t',   'light_bg');
+  bindColorPair('s-light-bgalt','s-light-bgalt-t','light_bg_alt');
+  bindColorPair('s-light-surf','s-light-surf-t',  'light_surface');
+  bindColorPair('s-light-txt', 's-light-txt-t',   'light_text_primary');
+  bindColorPair('s-light-txt2','s-light-txt2-t',  'light_text_secondary');
+  bindColorPair('s-acc1',      's-acc1-t',         'dark_accent1');
+  bindColorPair('s-acc2',      's-acc2-t',         'dark_accent2');
+  bindColorPair('s-acc3',      's-acc3-t',         'dark_accent3');
+  bindColorPair('s-nav-border','s-nav-border-t',   'nav_border_color');
+
+  ['s-grad-angle','s-radius-lg','s-radius-sm','s-transition','s-font-body','s-font-code'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => {
+      const keyMap = {'s-grad-angle':'gradient_angle','s-radius-lg':'radius_lg','s-radius-sm':'radius_sm','s-transition':'transition_speed','s-font-body':'font_body','s-font-code':'font_code'};
+      settingsData[keyMap[id]] = el.value;
+      refreshCSSPreview();
+    });
+  });
+
+  const waEl = document.getElementById('s-wa-number');
+  if (waEl) waEl.addEventListener('change', () => { settingsData.whatsapp_number = waEl.value; });
+}
+
+function populateSettingsUI(s) {
+  function setCP(pickerId, textId, val) {
+    const p = document.getElementById(pickerId);
+    const t = document.getElementById(textId);
+    if (p) { try { p.value = val; } catch(e){} }
+    if (t) t.value = val;
+  }
+  setCP('s-dark-bg',    's-dark-bg-t',    s.dark_bg);
+  setCP('s-dark-bgalt', 's-dark-bgalt-t', s.dark_bg_alt);
+  setCP('s-dark-surf',  's-dark-surf-t',  s.dark_surface);
+  setCP('s-dark-txt',   's-dark-txt-t',   s.dark_text_primary);
+  setCP('s-dark-txt2',  's-dark-txt2-t',  s.dark_text_secondary);
+  setCP('s-light-bg',   's-light-bg-t',   s.light_bg);
+  setCP('s-light-bgalt','s-light-bgalt-t',s.light_bg_alt);
+  setCP('s-light-surf', 's-light-surf-t', s.light_surface);
+  setCP('s-light-txt',  's-light-txt-t',  s.light_text_primary);
+  setCP('s-light-txt2', 's-light-txt2-t', s.light_text_secondary);
+  setCP('s-acc1',       's-acc1-t',        s.dark_accent1);
+  setCP('s-acc2',       's-acc2-t',        s.dark_accent2);
+  setCP('s-acc3',       's-acc3-t',        s.dark_accent3);
+  setCP('s-nav-border', 's-nav-border-t',  s.nav_border_color);
+  const sel = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  sel('s-grad-angle', s.gradient_angle);
+  sel('s-radius-lg',  s.radius_lg);
+  sel('s-radius-sm',  s.radius_sm);
+  sel('s-transition', s.transition_speed);
+  sel('s-font-body',  s.font_body);
+  sel('s-font-code',  s.font_code);
+  const wa = document.getElementById('s-wa-number');
+  if (wa) wa.value = s.whatsapp_number || '';
+  refreshCSSPreview();
+}
+
+function refreshCSSPreview() {
+  const s = collectSettings();
+  const css = buildCSSPreview(s);
+  const el = document.getElementById('s-css-preview');
+  if (el) el.value = css;
+}
+
+function buildCSSPreview(s) {
+  return `:root {
+  --bg:              ${s.dark_bg};
+  --bg-alt:          ${s.dark_bg_alt};
+  --surface:         ${s.dark_surface};
+  --accent-1:        ${s.dark_accent1};
+  --accent-2:        ${s.dark_accent2};
+  --accent-3:        ${s.dark_accent3};
+  --text-primary:    ${s.dark_text_primary};
+  --text-secondary:  ${s.dark_text_secondary};
+  --grad:            linear-gradient(${s.gradient_angle}, var(--accent-1), var(--accent-2));
+  --radius:          ${s.radius_lg};
+  --radius-sm:       ${s.radius_sm};
+  --transition:      ${s.transition_speed} cubic-bezier(0.4,0,0.2,1);
+  --font-body:       '${s.font_body}', sans-serif;
+  --font-code:       '${s.font_code}', monospace;
+}
+[data-theme="light"] {
+  --bg:              ${s.light_bg};
+  --bg-alt:          ${s.light_bg_alt};
+  --surface:         ${s.light_surface};
+  --accent-1:        ${s.light_accent1};
+  --accent-2:        ${s.light_accent2};
+  --text-primary:    ${s.light_text_primary};
+  --text-secondary:  ${s.light_text_secondary};
+}
+.navbar { border-bottom-color: ${s.nav_border_color}; }`;
+}
+
+function collectSettings() {
+  const g = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  return {
+    dark_bg: g('s-dark-bg-t') || settingsData.dark_bg,
+    dark_bg_alt: g('s-dark-bgalt-t') || settingsData.dark_bg_alt,
+    dark_surface: g('s-dark-surf-t') || settingsData.dark_surface,
+    dark_accent1: g('s-acc1-t') || settingsData.dark_accent1,
+    dark_accent2: g('s-acc2-t') || settingsData.dark_accent2,
+    dark_accent3: g('s-acc3-t') || settingsData.dark_accent3,
+    dark_text_primary: g('s-dark-txt-t') || settingsData.dark_text_primary,
+    dark_text_secondary: g('s-dark-txt2-t') || settingsData.dark_text_secondary,
+    light_bg: g('s-light-bg-t') || settingsData.light_bg,
+    light_bg_alt: g('s-light-bgalt-t') || settingsData.light_bg_alt,
+    light_surface: g('s-light-surf-t') || settingsData.light_surface,
+    light_accent1: g('s-acc1-t') || settingsData.dark_accent1,
+    light_accent2: g('s-acc2-t') || settingsData.dark_accent2,
+    light_text_primary: g('s-light-txt-t') || settingsData.light_text_primary,
+    light_text_secondary: g('s-light-txt2-t') || settingsData.light_text_secondary,
+    font_body: g('s-font-body') || settingsData.font_body,
+    font_code: g('s-font-code') || settingsData.font_code,
+    radius_lg: g('s-radius-lg') || settingsData.radius_lg,
+    radius_sm: g('s-radius-sm') || settingsData.radius_sm,
+    gradient_angle: g('s-grad-angle') || settingsData.gradient_angle,
+    whatsapp_number: g('s-wa-number') || settingsData.whatsapp_number,
+    nav_border_color: g('s-nav-border-t') || settingsData.nav_border_color,
+    transition_speed: g('s-transition') || settingsData.transition_speed,
+  };
+}
+
+async function loadSettings_() {
+  try {
+    settingsData = await apiGet('/settings');
+    populateSettingsUI(settingsData);
+    initSettingsBindings();
+  } catch(e) {
+    settingsData = {...SETTINGS_DEFAULTS};
+    populateSettingsUI(settingsData);
+    initSettingsBindings();
+  }
+}
+
+async function saveSettings() {
+  const s = collectSettings();
+  try {
+    await apiPut('/settings', s);
+    settingsData = s;
+    toast('Settings saved — CSS rebuilt! Refresh your site to see changes.', 'success');
+  } catch(e) { toast('Save failed: '+e.message, 'error'); }
+}
+
+function resetSettingsDefaults() {
+  if (!confirm('Reset all appearance settings to defaults?')) return;
+  settingsData = {...SETTINGS_DEFAULTS};
+  populateSettingsUI(settingsData);
+  toast('Defaults restored — click Save to apply', 'info');
+}
+
+function switchSettingsTab(name, btn) {
+  ['colors','typography','layout','misc'].forEach(t => {
+    const el = document.getElementById('stab-'+t);
+    if (el) el.classList.toggle('hidden', t !== name);
+  });
+  document.querySelectorAll('#settings-tabs .tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (name === 'misc') refreshCSSPreview();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CAROUSEL ADMIN
+═══════════════════════════════════════════════════════════════ */
+let carouselData = [];
+
+async function loadCarouselAdmin() {
+  try {
+    carouselData = await apiGet('/carousel');
+    renderCarouselAdmin();
+  } catch(e) { toast('Failed to load carousel', 'error'); }
+}
+
+function renderCarouselAdmin() {
+  const el = document.getElementById('carousel-admin-list');
+  const addBtn = document.getElementById('add-slide-btn');
+  if (addBtn) addBtn.style.display = carouselData.length >= 4 ? 'none' : '';
+
+  el.innerHTML = carouselData.map((slide, i) => `
+    <div class="card" style="margin-bottom:1rem" id="cslide-${i}">
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center gap-2">
+  <span style="width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;flex-shrink:0">${i+1}</span>
+  <span class="fw-700">📸 Slide ${i+1}</span>
+</div>
+
+<div class="flex gap-2">
+  ${i > 0 ? `<button class="btn btn-ghost btn-xs" onclick="moveCarouselSlide(${i},-1)">↑</button>` : ''}
+  ${i < carouselData.length-1 ? `<button class="btn btn-ghost btn-xs" onclick="moveCarouselSlide(${i},1)">↓</button>` : ''}
+  <button class="btn btn-danger btn-xs" onclick="removeCarouselSlide(${i})">Remove</button>
+</div>
+      </div>
+
+      ${`
+        <!-- Image slide editor -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" value="${esc(slide.title||'')}" placeholder="Slide headline" onchange="carouselData[${i}].title=this.value"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Caption Tag</label>
+            <input type="text" value="${esc(slide.caption||'')}" placeholder="e.g. Open Source" onchange="carouselData[${i}].caption=this.value"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subtitle</label>
+          <input type="text" value="${esc(slide.subtitle||'')}" placeholder="Supporting description" onchange="carouselData[${i}].subtitle=this.value"/>
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+          <label class="form-label">Background Image</label>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;flex-wrap:wrap">
+            ${slide.image ? `<img src="${esc(slide.image)}" style="width:120px;height:72px;object-fit:cover;border-radius:var(--r-sm);border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'"/>` : `<div style="width:120px;height:72px;background:var(--surface2);border-radius:var(--r-sm);border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.75rem;flex-shrink:0">No image</div>`}
+            <div style="flex:1;min-width:200px">
+              <input type="url" value="${esc(slide.image||'')}" placeholder="https://... or upload below" style="margin-bottom:0.5rem" onchange="carouselData[${i}].image=this.value;renderCarouselAdmin()"/>
+              <div>
+                <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                  📁 Upload Image
+                  <input type="file" accept="image/*" style="display:none" onchange="uploadSlideImage(${i},this)"/>
+                </label>
+                <span class="text-xs text-muted" style="margin-left:0.5rem">JPG/PNG/WEBP, max 8MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `}
+    </div>`).join('');
+}
+
+async function uploadSlideImage(idx, input) {
+  const file = input.files[0]; if (!file) return;
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch(API+'/carousel/upload', {method:'POST', credentials:'include', body:fd});
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error);
+    carouselData[idx].image = d.url;
+    renderCarouselAdmin();
+    toast('Image uploaded', 'success');
+  } catch(e) { toast('Upload failed: '+e.message, 'error'); }
+}
+
+function addCarouselSlide() {
+  if (carouselData.length >= 4) { toast('Maximum 4 slides allowed', 'error'); return; }
+  carouselData.push({
+    id: 'slide-'+(Date.now()),
+    type: 'image',
+    title: '',
+    subtitle: '',
+    caption: '',
+    image: '',
+    bg_color: ''
+  });
+  renderCarouselAdmin();
+}
+
+function removeCarouselSlide(i) {
+  if (!confirm('Remove this slide?')) return;
+  carouselData.splice(i, 1);
+  renderCarouselAdmin();
+}
+
+function moveCarouselSlide(i, dir) {
+  const t = carouselData[i];
+  carouselData[i] = carouselData[i+dir];
+  carouselData[i+dir] = t;
+  renderCarouselAdmin();
+}
+
+async function saveCarousel() {
+  try {
+    await apiPut('/carousel', carouselData);
+    toast('Carousel saved — refresh your site to see changes', 'success');
+  } catch(e) { toast('Save failed: '+e.message, 'error'); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+checkAuth();
+document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

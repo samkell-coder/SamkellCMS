@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samuel Kelechi — Full-Stack Engineer</title>
+  <meta name="description" content="Portfolio of Samuel Kelechi — Go engineer, API architect, and occasional blogger." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/theme-override.css" />
+</head>
+<body>
+
+<!-- ── Navbar ──────────────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">SamKell<span class="accent">&lt;&gt;</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Mobile nav drawer ────────────────────────────────────────── -->
+<div class="nav-drawer" id="nav-drawer">
+  <ul>
+    <li><a href="#about"    class="drawer-link">About</a></li>
+    <li><a href="#skills"   class="drawer-link">Skills</a></li>
+    <li><a href="#projects" class="drawer-link">Projects</a></li>
+    <li><a href="#blog"     class="drawer-link">Blog</a></li>
+    <li><a href="#contact"  class="drawer-link">Contact</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+  <!-- ── Hero (slide 1 of carousel) ─────────────────────────────── -->
+  <section id="hero" class="hero-section">
+    <div class="hero-bg-glow"></div>
+    <div class="container hero-content">
+      <p class="hero-eyebrow reveal">Welcome to my website — available to work with you 🟢</p>
+      <h1 class="hero-name reveal" id="hero-name"><span class="skeleton skeleton-h1"></span></h1>
+      <p class="hero-role reveal" id="hero-role"><span class="skeleton skeleton-text"></span></p>
+      <p class="hero-tagline reveal" id="hero-tagline"><span class="skeleton skeleton-text" style="width:70%"></span></p>
+      <div class="hero-actions reveal" id="hero-actions">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact"  class="btn btn-ghost">Get in Touch</a>
+      </div>
+      <div class="hero-social reveal" id="hero-social"></div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── Carousel ────────────────────────────────────────────────── -->
+  <section id="carousel-section" class="carousel-section">
+    <div class="carousel-track-wrap">
+      <div class="carousel-track" id="carousel-track">
+        <!-- slides injected by JS -->
+      </div>
+    </div>
+    <!-- Nav arrows -->
+    <button class="carousel-arrow carousel-prev" id="carousel-prev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="carousel-arrow carousel-next" id="carousel-next" aria-label="Next slide">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <!-- Dots -->
+    <div class="carousel-dots" id="carousel-dots"></div>
+    <!-- Caption bar -->
+    <div class="carousel-caption-bar" id="carousel-caption-bar"></div>
+  </section>
+
+  <!-- ── About ───────────────────────────────────────────────────── -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2 class="section-title reveal">About Me</h2>
+      <div class="about-grid">
+        <div class="about-photo-wrap reveal">
+          <div class="about-photo-ring">
+            <img id="about-photo" src="" alt="Profile photo" class="about-photo" />
+          </div>
+          <div class="about-badge" id="about-location"></div>
+        </div>
+        <div class="about-text reveal" id="about-text">
+          <div class="skeleton skeleton-text mb"></div>
+          <div class="skeleton skeleton-text mb"></div>
+          <div class="skeleton skeleton-text" style="width:60%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Skills ──────────────────────────────────────────────────── -->
+  <section id="skills" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title reveal">Skills</h2>
+      <div class="skills-grid" id="skills-grid">
+        <div class="skill-group skeleton-card reveal"></div>
+        <div class="skill-group skeleton-card reveal"></div>
+        <div class="skill-group skeleton-card reveal"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Projects ────────────────────────────────────────────────── -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title reveal">Projects</h2>
+      <div class="projects-grid" id="projects-grid">
+        <div class="project-card skeleton-card reveal" style="height:220px"></div>
+        <div class="project-card skeleton-card reveal" style="height:220px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Blog ────────────────────────────────────────────────────── -->
+  <section id="blog" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title reveal">Blog</h2>
+      <div id="blog-list">
+        <div class="blog-grid" id="blog-grid">
+          <div class="blog-card skeleton-card reveal" style="height:180px"></div>
+          <div class="blog-card skeleton-card reveal" style="height:180px"></div>
+        </div>
+      </div>
+      <div id="blog-post" class="blog-post-view hidden">
+        <button class="btn btn-ghost back-btn" id="back-btn">← Back to Blog</button>
+        <article id="blog-post-content" class="prose"></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ─────────────────────────────────────────────────── -->
+  <section id="contact" class="section">
+    <div class="container contact-wrap">
+      <h2 class="section-title reveal">Say Hello</h2>
+      <p class="section-sub reveal">Have a project in mind, a question, or just want to connect? I read every message.</p>
+      <div class="contact-card reveal">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-name">Name</label>
+            <input type="text" id="c-name" placeholder="Your name" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" rows="5" placeholder="What's on your mind?"></textarea>
+        </div>
+        <button class="btn btn-primary send-btn" id="send-btn">Send Message</button>
+        <p class="form-status" id="form-status"></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ───────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <p>Built with love + Go + Vanilla JS · <span id="footer-year"></span></p>
+    <p class="footer-sub">Dark by default, fast by design.</p>
+  </div>
+</footer>
+
+<!-- ── Floating action buttons — bottom LEFT ─────────────────────
+     Stack (bottom to top): WhatsApp → Scroll-to-top
+──────────────────────────────────────────────────────────────── -->
+<div class="fab-stack" id="fab-stack">
+
+  <!-- WhatsApp (always visible, bottom of stack) -->
+  <a class="fab fab-whatsapp" id="fab-whatsapp"
+     href="https://wa.me/+2348168642824"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Chat on WhatsApp">
+    <span class="fab-label">Chat on WhatsApp</span>
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+  <!-- Scroll-to-top (appears after scrolling 400px) -->
+  <button class="fab fab-totop" id="fab-totop"
+          aria-label="Scroll to top"
+          onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <span class="fab-label">Back to top</span>
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+    </svg>
+  </button>
+
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
