@@ -1,38 +1,52 @@
 [
   {
-    "id": "slide-1",
-    "type": "hero",
-    "title": "",
-    "subtitle": "",
+    "bg_color": "#0d0f1a",
     "caption": "",
+    "enabled": false,
+    "id": "slide-1",
     "image": "",
-    "bg_color": ""
-  },
-  {
-    "id": "slide-2",
-    "type": "image",
-    "title": "Building Scalable Systems",
-    "subtitle": "From microservices to monoliths — engineered for growth",
-    "caption": "Architecture & Backend",
-    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400&q=80",
-    "bg_color": "#0d0f1a"
-  },
-  {
-    "id": "slide-3",
-    "type": "image",
-    "title": "Open Source & Community",
     "subtitle": "Contributing to the tools that power modern development",
-    "caption": "Open Source",
-    "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80",
-    "bg_color": "#0d0f1a"
+    "title": "Main Beauty of CSS",
+    "type": "image"
   },
   {
+    "bg_color": "#0d0f1a",
+    "caption": "Architecture \u0026 Backend",
+    "enabled": false,
+    "id": "slide-2",
+    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400\u0026q=80",
+    "subtitle": "From microservices to monoliths — engineered for growth",
+    "title": "Building Scalable Systems",
+    "type": "image"
+  },
+  {
+    "bg_color": "#0d0f1a",
+    "caption": "Open Source",
+    "enabled": false,
+    "id": "slide-3",
+    "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400\u0026q=80",
+    "subtitle": "Contributing to the tools that power modern development",
+    "title": "Open Source \u0026 Community",
+    "type": "image"
+  },
+  {
+    "bg_color": "#0d0f1a",
+    "caption": "Frontend \u0026 Design",
+    "enabled": false,
     "id": "slide-4",
-    "type": "image",
-    "title": "Crafting Beautiful Interfaces",
+    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1400\u0026q=80",
     "subtitle": "Clean code meets pixel-perfect design",
-    "caption": "Frontend & Design",
-    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1400&q=80",
-    "bg_color": "#0d0f1a"
+    "title": "Crafting Beautiful Interfaces",
+    "type": "image"
+  },
+  {
+    "bg_color": "",
+    "caption": "",
+    "enabled": false,
+    "id": "slide-1782583921052",
+    "image": "/static/slide-1782583947270736016.jpg",
+    "subtitle": "",
+    "title": "Beuty",
+    "type": "image"
   }
 ]

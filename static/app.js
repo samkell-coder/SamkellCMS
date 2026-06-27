@@ -355,17 +355,45 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
   async function loadCarousel() {
     try {
       slides = await fetchJSON('/api/carousel');
-      if (!slides || !slides.length) return;
+
+      // Only show enabled slides
+      slides = (slides || []).filter(slide => slide.enabled !== false);
+
+      const section = document.getElementById('carousel-section');
+      if (!section) return;
+
+      // No slides → hide the entire carousel
+      if (slides.length === 0) {
+        section.style.display = 'none';
+        stopAuto();
+        return;
+      }
+
+      section.style.display = '';
+
+      current = 0;
+
       buildCarousel();
+      goTo(0);
       startAuto();
-    } catch (e) { console.warn('Carousel load failed', e); }
+
+    } catch (e) {
+      console.warn('Carousel load failed', e);
+    }
   }
 
   function buildCarousel() {
-    const track  = document.getElementById('carousel-track');
-    const dots   = document.getElementById('carousel-dots');
-    const bar    = document.getElementById('carousel-caption-bar');
+    const track = document.getElementById('carousel-track');
+    const dots  = document.getElementById('carousel-dots');
+    const bar   = document.getElementById('carousel-caption-bar');
+
     if (!track) return;
+
+    // Fixed: Added closing curly brace to block below
+    if (slides.length === 0) {
+        document.getElementById('hero').style.display = 'none';
+        return;
+    }
 
     track.innerHTML = '';
     dots.innerHTML  = '';
