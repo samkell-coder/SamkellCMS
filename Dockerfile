@@ -12,5 +12,6 @@ WORKDIR /app
 COPY --from=builder /app/portfolio .
 COPY data/ data/
 COPY static/ static/
+COPY admin/ admin/
 EXPOSE 8080
 CMD ["./portfolio"]
