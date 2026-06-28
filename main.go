@@ -107,7 +107,7 @@ func hashPassword(pw string) string {
 func adminPassword() string {
 	pw := os.Getenv("ADMIN_PASSWORD")
 	if pw == "" {
-		pw = "admin123" // default — change via env var in production
+		pw = "@sam3542" // default — change via env var in production
 	}
 	return hashPassword(pw)
 }
